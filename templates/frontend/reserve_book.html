@@ -1,0 +1,13 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal">&times;</button>
+  <h3 class="modal-title">Confirm Reserve</h3>
+</div>
+<form class="form" action="{% url 'my_app:reserve_book' book.id %}" method="post">{% csrf_token %}
+  <div class="modal-body">
+    <p>Are you sure you want to reserve this book?</p>
+  </div>
+  <div class="modal-footer">
+    <input type="submit" value="Reserve" class="btn btn-danger">
+    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+  </div>
+</form>

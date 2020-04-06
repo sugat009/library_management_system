@@ -1,0 +1,104 @@
+{% extends 'frontend/index.html' %}
+{% load humanize staticfiles %}
+
+{% block header %}
+<style media="screen">
+  body {
+    overflow-y: hidden;
+  }
+  .list-group-item:hover {
+    background: #eee;
+  }
+  .darker {
+    font-weight: bold;
+  }
+  .lighter {
+    font-weight: normal;
+  }
+</style>
+{% endblock header %}
+
+{% block maincontent %}
+<div class="" style="margin-top: 128px; min-height: 444px;">
+  <div class="container">
+    <h1>Notifications</h1>
+    {% if no_of_notifications > 0 %}
+    <button class="btn btn-primary" type="button" name="button" id="markAllButton">Mark All as Read</button><br><br>
+    {% endif %}
+    <div class="card" style="width: 100%;">
+      <ul class="list-group list-group-flush">
+        {% for notification in notifications %}
+        <a href="{% url 'my_app:frontend_booking_detail' notification.actor.id %}">
+          <li class="list-group-item">
+            <span class="notification-title {% if not notification.unread %}lighter{% else %}darker{% endif %}" data-id="{{ notification.id }}">
+              {{ notification.verb }}
+            </span>
+            <span style="float: right;">{{notification.timestamp|naturaltime}}</span>
+          </li>
+        </a>
+        {% endfor %}
+      </ul>
+    </div>
+    {% if is_paginated %}
+    <ul class="pagination load-questions">
+      {% if page_obj.has_previous %}
+      <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+      {% else %}
+      <li class="disabled"><span>&laquo;</span></li>
+      {% endif %}
+      {% for i in paginator.page_range %}
+      {% if page_obj.number == i %}
+      <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+      {% else %}
+      <li><a href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+      {% endfor %}
+      {% if page_obj.has_next %}
+      <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+      {% else %}
+      <li class="disabled"><span>&raquo;</span></li>
+      {% endif %}
+    </ul>
+    {% endif %}
+  </div>
+</div>
+{% endblock maincontent %}
+
+{% block script %}
+<script>
+  $("#markAllButton").click(function() {
+    $(".notification-title").removeClass('darker');
+    $(".notification-title").addClass('lighter');
+    $.post(
+      "/markallasread/", {
+        'csrfmiddlewaretoken': '{{ csrf_token }}',
+      },
+      function(data, status) {
+        $("#markAllButton").hide();
+        $(".current_page_item").children("a").empty();
+        $(".current_page_item").children("a").append("Notifications");
+        $("#nav-not-count").empty();
+      }
+    )
+  });
+</script>
+<script>
+  $(".notification-title").click(function(event) {
+    event.preventDefault();
+    console.log("inside");
+    var id = $(this).data('id');
+    $("#" + id).removeClass("darker");
+    $("#" + id).addClass("lighter");
+    var _this = $(this);
+    $.post(
+      "/markasread/", {
+        'csrfmiddlewaretoken': '{{ csrf_token }}',
+        'notification_id': id,
+      },
+      function(data, status) {
+        window.location.href = _this.parent().parent().attr('href');
+      }
+    )
+  });
+</script>
+{% endblock script %}

@@ -1,0 +1,21 @@
+{% extends 'administration/library/home.html' %}
+{% load staticfiles %}
+
+{% block maincontent %}
+<h3 class="page-title"> <a href="{% url 'my_app:list_booking' %}"></a> Booking / List</h3>
+<div class="panel">
+  <div class="panel-heading">
+    <h3 class="panel-title"> Booking Form</h3>
+  </div>
+  <div class="panel-body">
+    <form class="form" action="" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <div class="form-group">
+        <input type="submit" id="submit" class="btn btn-success" value="Save">
+        <a href="{% url 'my_app:list_booking' %}" class="btn btn-primary">Cancel </a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock maincontent %}

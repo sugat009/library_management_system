@@ -1,0 +1,226 @@
+{% extends 'frontend/index.html' %}
+
+{% block header %}
+<link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css'>
+<link rel='stylesheet prefetch' href='https://fonts.googleapis.com/icon?family=Material+Icons'>
+<style media="screen">
+  .movie-card {
+    background-size: contain;
+    background-position: 0% 80%;
+    background-repeat: no-repeat;
+    width: 75%;
+    max-width: 800px;
+    height: 300px;
+    display: block;
+    margin: 8vh auto;
+    border-radius: 8px;
+    -webkit-box-shadow: 0px 8px 12px 0px rgba(0, 0, 0, 0.25);
+    box-shadow: 0px 8px 12px 0px rgba(0, 0, 0, 0.25);
+  }
+
+  .color-overlay {
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    background: -webkit-gradient(linear, left top, right top, from(rgba(42, 159, 255, 0.2)), color-stop(60%, #212120), to(#212120));
+    background: linear-gradient(to right, rgba(42, 159, 255, 0.2) 0%, #212120 60%, #212120 100%);
+    background-blend-mode: multiply;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: "Montserrat", helvetica, arial, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    line-height: 1;
+    font-weight: 400;
+  }
+
+  .movie-content {
+    width: 40%;
+    display: block;
+    position: relative;
+    float: right;
+    padding-right: 1em;
+  }
+
+  .movie-content .movie-title {
+    color: #ffffff;
+    margin-bottom: .25em;
+    opacity: .75;
+  }
+
+  .movie-content .movie-info {
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: .8em;
+    color: #2a9fff;
+    line-height: 1;
+    margin: 0;
+    font-weight: 700;
+    opacity: .5;
+  }
+
+  .movie-content .movie-header {
+    margin-bottom: 2em;
+  }
+
+  .movie-content .movie-desc {
+    font-weight: 300;
+    opacity: .84;
+    margin-bottom: 2em;
+  }
+
+  .btn {
+    padding: .8em 2em;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+  }
+
+  .btn-outline {
+    background-color: transparent;
+    border: 3px solid #ffffff;
+  }
+
+  .btn::before {
+    font-family: 'Material Icons';
+    content: '\e037';
+    vertical-align: middle;
+    font-size: 1.5em;
+    padding-right: .5em;
+  }
+
+  .btn-outline:hover {
+    border-color: #2a9fff;
+    color: #2a9fff;
+    -webkit-box-shadow: 0px 1px 8px 0px rgba(245, 199, 0, 0.2);
+    box-shadow: 0px 1px 8px 0px rgba(245, 199, 0, 0.2);
+  }
+
+  .movie-share {
+    padding: 1em;
+    display: inline-block;
+    width: 15%;
+  }
+
+  .movie-share__icon i {
+    font-size: 1.2em;
+    margin-left: .5em;
+    color: #ffffff;
+    mix-blend-mode: lighten;
+    opacity: .4;
+  }
+
+  .movie-share__icon i:hover {
+    opacity: 1;
+    mix-blend-mode: lighten;
+  }
+
+  @media (max-width: 1000px) {
+    .movie-content {
+      width: 50%;
+      max-width: 95%;
+    }
+  }
+
+  @media (max-width: 800px) {
+    .movie-card {
+      width: 95%;
+      max-width: 95%;
+    }
+  }
+
+  @media (max-width: 600px) {
+
+    .movie-card,
+    .movie-card:nth-child(2),
+    .movie-card:nth-child(3) {
+      background-position: 50% 0%;
+      background-size: cover;
+      height: 400px;
+    }
+
+    .color-overlay {
+      background: -webkit-gradient(linear, left top, left bottom, from(rgba(42, 159, 255, 0.2)), color-stop(60%, #212120), to(#212120));
+      background: linear-gradient(to bottom, rgba(42, 159, 255, 0.2) 0%, #212120 60%, #212120 100%);
+    }
+
+    .movie-content {
+      margin-top: 4.2em;
+      width: 90%;
+    }
+
+    .movie-share {
+      display: block;
+      width: 100%;
+    }
+  }
+</style>
+{% endblock header %}
+
+{% block maincontent %}
+<div class="" style="margin-top: 128px;">
+  {% if object_list.count > 0 %}
+  <h2 class="container text-center">You have booked the following books:</h2>
+
+  <div id="movie-card-list">
+    <!-- Card 1: Blade Runner -->
+    {% for book in object_list %}
+    <div class="movie-card" style="background-image: url('{{ book.book.image.url }}')">
+      <div class="color-overlay">
+        <div class="movie-content">
+          <div class="movie-header">
+            <h1 class="movie-title">{{ book.book.title }}</h1>
+            <h4 class="movie-info">({{ book.book.published_date }}) {{ book.book.category }}</h4>
+          </div>
+          <p class="movie-desc"></p>
+          <a class="btn btn-outline" href="{% url 'my_app:frontend_booking_detail' book.id %}">See more</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="container text-center">
+    <h2>
+      You don't have any bookings with us.
+    </h2>
+  </div>
+  {% endif %}
+
+  {% if lent_books.count > 0 %}
+  <h2 class="container text-center" style="border-top: 1px solid #666; padding-top: 32px;">You have lent the following books:</h2>
+
+  <div id="movie-card-list">
+    <!-- Card 1: Blade Runner -->
+    {% for book in lent_books %}
+    <div class="movie-card" style="background-image: url('{{ book.book.image.url }}')">
+      <div class="color-overlay">
+        <div class="movie-content">
+          <div class="movie-header">
+            <h1 class="movie-title">{{ book.book.title }}</h1>
+            <h4 class="movie-info">({{ book.book.published_date }}) {{ book.book.category }}</h4>
+          </div>
+          <p class="movie-desc"></p>
+          <a class="btn btn-outline" href="{% url 'my_app:frontend_booking_detail' book.id %}">See more</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+
+    <div class="" style="text-align: center; margin-bottom: 32px;">
+      <a href="{% url 'accounts:history' %}">
+        <button type="button" class="ready-btn" name="button">See full history</button>
+      </a>
+    </div>
+  </div>
+  {% else %}
+    <div class="container">
+      <div style="border-top: 1px solid #666; padding-top: 32px; text-align: center;">
+        <h2>You have not lent any books from us.</h2>
+      </div>
+    </div>
+  {% endif %}
+</div>
+{% endblock maincontent %}

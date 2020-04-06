@@ -1,0 +1,136 @@
+{% extends 'frontend/index.html' %}
+
+{% block header %}
+<style media="screen">
+  input.hidden {
+    position: absolute;
+    left: -9999px;
+  }
+
+  #profile-image1 {
+    cursor: pointer;
+
+    width: 100px;
+    height: 100px;
+    border:2px solid #03b1ce ;
+  }
+
+  .tital{
+    font-size:16px;
+    font-weight:500;
+  }
+
+  .bot-border{
+    border-bottom:1px #f8f8f8 solid;
+    margin:5px 0  5px 0;
+  }
+</style>
+{% endblock header %}
+
+{% block maincontent %}
+<div class="" style="margin-top: 100px;">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12 col-sm-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4 style="display: inline-block;">User Profile</h4>
+            <a href="{% url 'accounts:password_change' %}"><span style="float: right; ">Change Password</span></a>
+          </div>
+          <div class="panel-body">
+            <div class="box box-info">
+              <div class="box-body">
+                <div class="col-md-12 col-sm-12">
+                  <div align="center"> <img alt="User Pic" src="{{ user.photo.url }}" id="profile-image1" class="img-circle img-responsive">
+                    <form class="myForm" action="" method="post" enctype="multipart/form-data">
+                      {% csrf_token %}
+                      <input id="profile-image-upload" class="hidden" type="file" name="profile-pic">
+                    </form>
+                    <div style="color:#999;">click here to change profile image</div>
+                    <!--Upload Image Js And Css-->
+                  </div>
+                  <br>
+                  <!-- /input-group -->
+                </div>
+                <div class="col-sm-12 col-md-12">
+                  <h4 style="color:#00b1b1;">{{ user.username }}</h4>
+                </div>
+                <div class="clearfix"></div>
+                <hr style="margin:5px 0 5px 0;">
+                <div class="col-sm-5 col-xs-6 tital ">First Name:</div>
+                <div class="col-sm-7 col-xs-6 ">{{ user.first_name }}</div>
+                <div class="clearfix"></div>
+                <div class="bot-border"></div>
+                <div class="col-sm-5 col-xs-6 tital ">Last Name:</div>
+                <div class="col-sm-7"> {{ user.last_name }}</div>
+                <div class="clearfix"></div>
+                <div class="bot-border"></div>
+                <div class="col-sm-5 col-xs-6 tital ">Date Of Joining:</div>
+                <div class="col-sm-7">{{ user.created_at|date }}</div>
+                <div class="clearfix"></div>
+                <div class="bot-border"></div>
+                <div class="col-sm-5 col-xs-6 tital ">Address:</div>
+                <div class="col-sm-7">{{ user.address }}</div>
+                <div class="clearfix"></div>
+                <div class="bot-border"></div>
+                <div class="col-sm-5 col-xs-6 tital ">Phone Number:</div>
+                <div class="col-sm-7">{{ user.phone_number }}</div>
+                <div class="clearfix"></div>
+                <div class="bot-border"></div>
+                <!-- /.box-body -->
+              </div>
+              <!-- /.box -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <hr>
+  </div>
+</div>
+{% endblock maincontent %}
+
+{% block script %}
+<script>
+  $(function() {
+    $('#profile-image1').on('click', function() {
+      $('#profile-image-upload').click();
+    });
+    $('#profile-image-upload').change(function() {
+      var myFile = $(this).prop('files');
+
+      var formData = new FormData();
+      formData.append('profile_pic', myFile[0], myFile[0].name);
+      $.ajax({
+        type: 'POST',
+        headers: {
+          "X-CSRFToken": "{{ csrf_token }}"
+        },
+        data: formData,
+        url: "{% url 'accounts:change_pp' %}",
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: function(data) {
+          if (data['msg'] == "ok") {
+            $("#profile-image1").attr('src', data['new_pic_url']);
+          } else {
+            toastr.options = {
+              "debug": false,
+              "newestOnTop": false,
+              "positionClass": "toast-top-right",
+              "closeButton": true,
+              "timeOut": "10000",
+              "progressBar": false
+            };
+            toastr.error("Something went wrong!!!");
+          }
+        }
+      });
+    });
+  });
+</script>
+{% endblock script %}

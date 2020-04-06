@@ -1,0 +1,60 @@
+{% extends 'frontend/index.html' %}
+
+{% block header %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" />
+{% endblock header %}
+
+{% block maincontent %}
+<style media="screen">
+  p {
+    margin: 8px 0;
+  }
+</style>
+<div class="container">
+  <h2 style="color: #002633; margin-top: 128px;">Please fill in the following information</h2>
+  <div style="margin: 30px 0;">
+    <form class="form" action="" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" name="button">Submit Data</button>
+    </form>
+  </div>
+</div>
+{% endblock maincontent %}
+
+{% block script %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
+<script type="text/javascript">
+  $(document).ready(function() {
+    $(".select-multiple").select2({
+      'width': '100%'
+    });
+  });
+  $('.profession-select').select2({
+      'width': '100%',
+      tags: true,
+      createTag: function (params) {
+          return {
+              id: params.term,
+              text: params.term,
+              newOption: true,
+              isNew: true
+          }
+      }
+  }).on("select2:select", function(e) {
+    if(e.params.data.isNew){
+        var post_url = "{% url 'accounts:create_profession' %}";
+        $.post(post_url, 
+          { 
+            'title': e.params.data.text, 
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+          }, function(data){
+            $(".profession-select").select2("destroy").select2({"width": '100%'});
+            const curr = document.querySelectorAll("[data-select2-tag='true']");
+            const newCurr = curr[0];
+            newCurr.value = data['id'];
+        })
+    }
+  });
+</script>
+{% endblock script %}

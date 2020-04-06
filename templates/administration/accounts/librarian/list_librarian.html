@@ -1,0 +1,70 @@
+{% extends 'administration/library/home.html' %}
+{% load staticfiles %}
+
+{% block maincontent %}
+<h3 class="page-title">Librarians</h3>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <!-- student table -->
+      <div class="panel">
+        <a href="{% url 'accounts:create_librarian' %}" class="btn btn-primary btn-circle">
+          <i class="fa fa-plus"></i>
+        </a>
+        <div class="panel-body">
+          <table class="table table-striped" id="detTable">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for librarian in object_list %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ librarian.first_name }}</td>
+                <td>{{ librarian.last_name }}</td>
+                <td>{{ librarian.username }}</td>
+                <td>{{ librarian.email }}</td>
+                <td>
+                  <a href="{% url 'accounts:detail_librarian' librarian.id %}" title="Detail" class="btn btn-default">
+                    <i class="fa fa-eye" aria-hidden="true"></i>
+                  </a>
+                  <a href="{% url 'accounts:update_librarian' librarian.id %}" class="btn btn-primary" title="Update">
+                    <i class="fa fa-pencil"></i></a>
+                  <a href="{% url 'accounts:delete_librarian' librarian.id %}" data-toggle="modal" data-target="#pfModal" class="btn btn-danger" title="Delete">
+                    <i class="fa fa-trash"></i>
+                  </a>
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="8">
+                  <div class="alert alert-warning text-center">
+                    No Librarian Data Found
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- End of librarian table -->
+    </div>
+  </div>
+</div>
+{% endblock maincontent %}
+
+{% block script %}
+<script type="text/javascript">
+  $(document).ready(function() {
+    $("#detTable_wrapper").css("padding-top", "16px");
+  });
+</script>
+{% endblock script %}

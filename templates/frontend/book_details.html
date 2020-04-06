@@ -1,0 +1,362 @@
+{% extends 'frontend/index.html' %}
+
+{% block header %}
+<style media="screen">
+  .success-box {
+    margin:50px 0;
+    padding:10px 10px;
+    border:1px solid #eee;
+    background:#f9f9f9;
+  }
+
+  .success-box img {
+    margin-right:10px;
+    display:inline-block;
+    vertical-align:top;
+  }
+
+  .success-box > div {
+    vertical-align:top;
+    display:inline-block;
+    color:#888;
+  }
+
+  /* Rating Star Widgets Style */
+  .rating-stars ul {
+    list-style-type:none;
+    padding:0;
+
+    -moz-user-select:none;
+    -webkit-user-select:none;
+  }
+  .rating-stars ul > li.star {
+    display:inline-block;
+  }
+
+  .star:hover {
+    cursor: pointer;
+  }
+
+  /* Idle State of the stars */
+  .rating-stars ul > li.star > i.fa {
+    font-size:2.5em; /* Change the size of the stars */
+    color:#ccc; /* Color on idle state */
+  }
+
+  /* Hover state of the stars */
+  .rating-stars ul > li.star.hover > i.fa {
+    color:#FFCC36;
+  }
+
+  /* Selected state of the stars */
+  .rating-stars ul > li.star.selected > i.fa {
+    color:#FF912C;
+  }
+</style>
+{% endblock header %}
+
+{% block maincontent %}
+<!-- Start Bottom Header -->
+<div class="header-bg page-area">
+  <div class="home-overly"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="slider-content text-center">
+          <div class="header-bottom">
+            <div class="layer2 wow zoomIn" data-wow-duration="1s" data-wow-delay=".4s">
+              <h1 class="title2">Book Detail</h1>
+            </div>
+            <div class="layer3 wow zoomInUp" data-wow-duration="2s" data-wow-delay="1s">
+              <h2 class="title3">Get to know more about the book</h2>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- END Header -->
+<div class="blog-page area-padding">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+        <div class="page-head-blog">
+
+          <div class="single-blog-page">
+            <!-- Item based similar books -->
+            <div class="left-blog">
+              <h4>Books Similar to this book</h4>
+              <div class="recent-post">
+                <!-- start single post -->
+                {% for book in item_based_recommendation %}
+                <div class="recent-single-post">
+                  <div class="post-img">
+                    <a href="{% url 'my_app:frontend_book_detail' book.book.id %}">
+                      <img src="{{ book.book.image.url }}" alt="">
+                    </a>
+                  </div>
+                  <div class="pst-content">
+                    <p><a href="{% url 'my_app:frontend_book_detail' book.book.id %}">{{ book.book.title }}</a></p>
+                  </div>
+                </div>
+                {% endfor %}
+                <!-- End single post -->
+              </div>
+            </div>
+            <!-- Item based similar end -->
+          </div>
+
+          <div class="single-blog-page">
+            <!-- User based similar books -->
+            <div class="left-blog">
+              <h4>Users also liked</h4>
+              <div class="recent-post">
+                <!-- start single post -->
+                {% for book in user_based_recommendation %}
+                <div class="recent-single-post">
+                  <div class="post-img">
+                    <a href="{% url 'my_app:frontend_book_detail' book.book.id %}">
+                      <img src="{{ book.book.image.url }}" alt="">
+                    </a>
+                  </div>
+                  <div class="pst-content">
+                    <p><a href="{% url 'my_app:frontend_book_detail' book.book.id %}">{{ book.book.title }}</a></p>
+                  </div>
+                </div>
+                {% endfor %}
+                <!-- End single post -->
+              </div>
+            </div>
+            <!-- User based similar books end -->
+          </div>
+
+        </div>
+      </div>
+      <!-- End left sidebar -->
+
+      <!-- Start single blog -->
+      <div class="col-md-8 col-sm-8 col-xs-12">
+        <div class="row">
+          <div class="col-md-12 col-sm-12 col-xs-12">
+            <!-- single-blog start -->
+            <article class="blog-post-wrapper">
+              <div class="post-thumbnail">
+                <img src="{{ object.image.url }}" alt="" />
+              </div>
+              <div class="post-information">
+                <h2>{{ object.title }}</h2>
+                <div class="entry-meta">
+                  <span class="author-meta"><i class="fa fa-user"></i> <a href="">{{ object.author }}</a></span>
+                  <span><i class="fa fa-clock-o"></i>{{ object.published_date }}</span>
+                  <span>
+                    <i class="fa fa-tags"></i>
+                    <a href="">{{ object.category }}</a>
+                  </span>
+                  <span><i class="fa fa-star"></i>{{ object.avg_rating }}</span>
+                </div>
+              </div>
+            </article>
+            <!-- single-blog end -->
+          </div>
+        </div>
+        <p>Number in stock: {{object.number_in_stock }}</p>
+
+        {% if booking_choices == 1 %}
+        <p>You have booked/reserved this book</p>
+        {% elif booking_choices == 2 %}
+        <p>You have borrowed this book from library.</p>
+        {% else %}
+          {% if available %}
+            {% if not limit_exceeded %}
+            <p>Reserve this book:
+              <a {% if request.user.is_authenticated %} href="{% url 'my_app:reserve_book' object.id %}" data-toggle="modal" data-target="#myModal" {% else %} href="{% url 'accounts:member_login' %}?next={{ request.get_full_path }}" {% endif %}>
+                <i class="fa fa-bookmark" id="bookmark-btn" data-id="{{ object.id }}"></i>
+              </a>
+            </p>
+            {% else %}
+            <p>Sorry, you have reached your booking limit.</p>
+            {% endif %}
+          {% else %}
+          <p>
+            Sorry, this book is out of stock.
+          </p>
+          {% endif %}
+        {% endif %}
+
+        {% if booking_choices == 2 or booking_choices == 3 %}
+        <p><strong>Rate this book: </strong></p>
+        <section class='rating-widget'>
+          <!-- Rating Stars Box -->
+          <div class='rating-stars text-center'>
+            <ul id='stars'>
+              <li class='star {% if ratings > 0 %}hover{% endif %}' title='Poor' data-value='1'>
+                <i class='fa fa-star fa-fw'></i>
+              </li>
+              <li class='star {% if ratings > 1 %}hover{% endif %}' title='Fair' data-value='2'>
+                <i class='fa fa-star fa-fw'></i>
+              </li>
+              <li class='star {% if ratings > 2 %}hover{% endif %}' title='Good' data-value='3'>
+                <i class='fa fa-star fa-fw'></i>
+              </li>
+              <li class='star {% if ratings > 3 %}hover{% endif %}' title='Excellent' data-value='4'>
+                <i class='fa fa-star fa-fw'></i>
+              </li>
+              <li class='star {% if ratings > 4 %}hover{% endif %}' title='WOW!!!' data-value='5'>
+                <i class='fa fa-star fa-fw'></i>
+              </li>
+            </ul>
+          </div>
+
+          <div class='success-box'>
+            <div class='clearfix'></div>
+            <img alt='tick image' width='32' src='data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTkuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iTGF5ZXJfMSIgeD0iMHB4IiB5PSIwcHgiIHZpZXdCb3g9IjAgMCA0MjYuNjY3IDQyNi42NjciIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDQyNi42NjcgNDI2LjY2NzsiIHhtbDpzcGFjZT0icHJlc2VydmUiIHdpZHRoPSI1MTJweCIgaGVpZ2h0PSI1MTJweCI+CjxwYXRoIHN0eWxlPSJmaWxsOiM2QUMyNTk7IiBkPSJNMjEzLjMzMywwQzk1LjUxOCwwLDAsOTUuNTE0LDAsMjEzLjMzM3M5NS41MTgsMjEzLjMzMywyMTMuMzMzLDIxMy4zMzMgIGMxMTcuODI4LDAsMjEzLjMzMy05NS41MTQsMjEzLjMzMy0yMTMuMzMzUzMzMS4xNTcsMCwyMTMuMzMzLDB6IE0xNzQuMTk5LDMyMi45MThsLTkzLjkzNS05My45MzFsMzEuMzA5LTMxLjMwOWw2Mi42MjYsNjIuNjIyICBsMTQwLjg5NC0xNDAuODk4bDMxLjMwOSwzMS4zMDlMMTc0LjE5OSwzMjIuOTE4eiIvPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8L3N2Zz4K' />
+            <div class='text-message'></div>
+            <div class='clearfix'></div>
+          </div>
+        </section>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End Blog Area -->
+<div class="clearfix"></div>
+
+{% endblock maincontent %}
+
+{% block script %}
+<script type="text/javascript">
+  $('body').on('hidden.bs.modal', '.modal', function() {
+    $(this).removeData('bs.modal');
+  });
+</script>
+<script type="text/javascript">
+  $(document).ready(function() {
+
+    /* 1. Visualizing things on Hover - See next part for action on click */
+    $('#stars li').on('mouseover', function() {
+      var onStar = parseInt($(this).data('value'), 10); // The star currently mouse on
+
+      // Now highlight all the stars that's not after the current hovered star
+      $(this).parent().children('li.star').each(function(e) {
+        if (e < onStar) {
+          $(this).addClass('hover');
+        } else {
+          $(this).removeClass('hover');
+        }
+      });
+
+    }).on('mouseout', function() {
+      $(this).parent().children('li.star').each(function(e) {
+        $(this).removeClass('hover');
+      });
+    });
+
+
+    /* 2. Action to perform on click */
+    $('#stars li').on('click', function() {
+      var onStar = parseInt($(this).data('value'), 10); // The star currently selected
+      var stars = $(this).parent().children('li.star');
+
+      for (i = 0; i < stars.length; i++) {
+        $(stars[i]).removeClass('selected');
+      }
+
+      for (i = 0; i < onStar; i++) {
+        $(stars[i]).addClass('selected');
+      }
+
+      // JUST RESPONSE (Not needed)
+      var ratingValue = parseInt($('#stars li.selected').last().data('value'), 10);
+
+      console.log(ratingValue);
+
+      var msg = "";
+      if (ratingValue > 1) {
+        msg = "Thanks! You rated this " + ratingValue + " stars.";
+      } else {
+        msg = "We will improve ourselves. You rated this " + ratingValue + " stars.";
+      }
+      responseMessage(msg);
+
+      $.post(
+        "{% url 'my_app:rate_book' %}", {
+          "csrfmiddlewaretoken": "{{ csrf_token }}",
+          "user": "{{ request.user }}",
+          "book_id": "{{ object.id }}",
+          "rating": ratingValue
+        },
+        function(data, status) {
+          if (data != "ok") {
+            toastr.options = {
+              "debug": false,
+              "newestOnTop": false,
+              "positionClass": "toast-top-right",
+              "closeButton": true,
+              "timeOut": "10000",
+              "progressBar": false
+            };
+            toastr.error("Something went wrong!!!");
+          }
+        }
+      )
+    });
+  });
+
+  function responseMessage(msg) {
+    $('.success-box').fadeIn(200);
+    $('.success-box div.text-message').html("<span>" + msg + "</span>");
+  }
+
+  function setCookie(name, value, days) {
+    var expires = "";
+    if (days) {
+      var date = new Date();
+      date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+      expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/";
+  }
+
+  function getCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+      var c = ca[i];
+      while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+      if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+  }
+
+  function eraseCookie(name) {
+    document.cookie = name + '=; Max-Age=-99999999;';
+  }
+
+  function deleteCookie(cname) {
+    $.removeCookie(cname, {
+      path: '/'
+    });
+  }
+
+  $(document).ready(function() {
+    var cookieVal = getCookie("interest_categories");
+    if (!cookieVal) {
+      setCookie("interest_categories", "sent", 1);
+
+      $.post(
+        "{% url 'my_app:interest_handler' %}", {
+          "book_id": "{{ object.id }}",
+          "user_id": "{{ request.user.id }}",
+          "category_id": "{{ object.category.id }}",
+          "csrfmiddlewaretoken": "{{ csrf_token }}"
+        },
+        function(data, status) {
+
+        }
+      );
+    }
+  });
+</script>
+{% endblock script %}

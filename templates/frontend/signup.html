@@ -1,0 +1,28 @@
+{% extends 'frontend/index.html' %}
+
+{% block maincontent %}
+<style media="screen">
+  p {
+    margin: 8px 0;
+  }
+</style>
+<div class="" style="margin-top: 128px;">
+  <h1 class="text-center" style="color: #002633;">Please fill the following form to Signup</h1>
+  <div class="container">
+    <div class="" style="margin: 30px 0;">
+      <form class="" action="" method="post" enctype="multipart/form-data">
+        {% if messages %}
+        <ul class="messages">
+          {% for message in messages %}
+          <li {% if message.tags %} class="{{ message.tags }}" {% endif %} style="color: red;">{{ message }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" name="button">Signup</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock maincontent %}

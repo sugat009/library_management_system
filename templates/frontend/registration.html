@@ -1,0 +1,29 @@
+{% extends 'administration/library/account/login.html' %}
+{% load staticfiles %}
+
+{% block wrapper %}
+<div id="wrapper">
+  <div class="vertical-align-wrap">
+    <div class="vertical-align-middle">
+      <div class="auth-box ">
+        <div class="left">
+          <div class="content">
+            <div class="header">
+              <div class="logo text-center"><img src="{% static 'administration/img/main.png' %}" alt="Klorofil Logo"></div>
+              <p class="lead">Create a member account</p>
+            </div>
+            <form class="form" action="" method="post" enctype="multipart/form-data">
+              {% csrf_token %}
+              {{ form.as_p }}
+              <div class="form-group">
+                <input type="submit" id="submit" class="btn btn-success" value="Save">
+                <a href="{% url 'accounts:list_librarian' %}" class="btn btn-primary">Cancel </a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock wrapper %}

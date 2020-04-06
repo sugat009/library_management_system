@@ -1,0 +1,12 @@
+{% extends 'frontend/login.html' %}
+
+{% block maincontent %}
+<div class="container col-md-offset-4" style="margin: auto;">
+  <div class="" style="margin-top: 256px; margin-bottom: 124px;">
+    <div class="jumbotron">
+      <h1 class="display-4">Password Changed Successfully !!</h1>
+      <a class="btn btn-primary btn-raised" href="{% url 'accounts:member_login' %}" role="button">Login</a>
+    </div>
+  </div>
+</div>
+{% endblock maincontent %}

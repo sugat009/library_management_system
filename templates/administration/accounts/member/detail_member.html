@@ -1,0 +1,40 @@
+{% extends 'administration/library/home.html' %}
+{% load staticfiles %}
+
+{% block header %}
+<style media="screen">
+  .glyphicon {  margin-bottom: 10px;margin-right: 10px;}
+</style>
+{% endblock header %}
+
+{% block maincontent %}
+  <h3 class="page-title"><a href="{% url 'accounts:list_member' %}">Member / Detail</a></h3>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class="well well-sm">
+          <div class="row">
+            <div class="col-sm-6 col-md-4">
+              <img src="{% if object.photo %}{{ object.photo.url }}{% else %}http://placehold.it/380x500{% endif %}" alt="" class="img-rounded img-responsive" />
+            </div>
+            <div class="col-sm-6 col-md-8">
+              <h4>{{ object.first_name }} {{ object.last_name }}</h4>
+              <small>
+                <cite title="San Francisco, USA">
+                  <i class="glyphicon glyphicon-map-marker">
+                    {{ object.address }}
+                  </i>
+                </cite>
+              </small>
+              <p>
+                <i class="glyphicon glyphicon-envelope"></i>{{ object.email }}
+                <br />
+                <i class="glyphicon glyphicon-phone"></i>{{ object.phone_number }}
+                <br />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock maincontent %}

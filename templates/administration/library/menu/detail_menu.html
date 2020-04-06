@@ -1,0 +1,41 @@
+{% extends "administration/library/home.html" %}
+{%load staticfiles %}
+
+{% block maincontent %}
+<div id="content">
+  <section>
+    <div class="section-header">
+      <ol class="breadcrumb">
+        <li><a href="{% url 'my_app:list_menu' %}">Menu</a></li>
+        <li class="active">Detail</li>
+      </ol>
+    </div>
+    <div class="section-body">
+      <div class="card">
+        <div class="card-body">
+          <table class="table table-striped table-hover" id="detTable">
+            <tbody>
+              <tr>
+                <td><b> Title</b></td><br>
+                <td>{{ menu.title|safe }}</td>
+              </tr>
+              <tr>
+                <td><b> Position</b></td><br>
+                <td>{{menu.position}}</td>
+              </tr>
+              <tr>
+                <td><b> Urls</b></td><br>
+                <td>{{menu.urls}}</td>
+              </tr>
+              <tr>
+                <td><b> Parent</b></td><br>
+                <td>{{menu.parent}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock maincontent %}

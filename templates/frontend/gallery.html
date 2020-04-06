@@ -1,0 +1,142 @@
+{% extends 'frontend/index.html' %}
+
+{% block header %}
+<style media="screen">
+  .img-fluid:hover {
+    cursor: pointer;
+  }
+  .mr-2 {
+    margin-right: 2rem;
+  }
+  .mr-10 {
+    margin-right: 10rem;
+  }
+  .mr-4 {
+    margin-right: 4rem;
+  }
+  .mb-4 {
+    margin-bottom: 4rem;
+  }
+  .partitioner {
+    margin-top: 128px;
+  }
+  .mb-0 {
+    margin-bottom: 0;
+  }
+  .ml-4 {
+    margin-left: 4rem;
+  }
+  .p-0 {
+    padding: 0;
+  }
+  .justify-content-center {
+    justify-content: center;
+  }
+</style>
+{% endblock header %}
+
+{% block maincontent %}
+<div class="container">
+  <div class="partitioner">
+    <!-- Grid row -->
+    <div class="row">
+      {% for book in object_list %}
+      <!-- Grid column -->
+      <div class="col-lg-4 col-md-12 mb-4">
+        <!--Modal: Name-->
+        <div class="modal fade" id="modal{{forloop.counter}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-lg" role="document">
+            <!--Content-->
+            <div class="modal-content">
+              <!--Body-->
+              <div class="modal-body mb-0 p-0">
+                <div class="embed-responsive embed-responsive-16by9 z-depth-1-half">
+                  <a href="{% url 'my_app:frontend_book_detail' book.id %}">
+                    <img src="{{ book.image.url }}" alt="" height="auto" width="100%">
+                  </a>
+                </div>
+              </div>
+              <!--Footer-->
+              <div class="modal-footer justify-content-center">
+                <span class="mr-2"><a href="{% url 'my_app:frontend_book_detail' book.id %}">{{ book.title }}</a></span>
+                <span class="mr-2"><strong>Written by: </strong>{{ book.author }}</span>
+                <span class="mr-10"><strong>Category: </strong>{{ book.category }} ({{ book.published_date }})</span>
+                <button type="button" class="btn btn-outline-primary btn-rounded btn-md ml-4" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+            <!--/.Content-->
+          </div>
+        </div>
+        <!--Modal: Name-->
+        <a>
+          <img class="img-fluid z-depth-1"
+                src="{{ book.image.url }}" alt="video" data-toggle="modal"
+                data-target="#modal{{forloop.counter}}"
+                style="height: 256px; width: 100%;">
+        </a>
+      </div>
+      <!-- Grid column -->
+      {% endfor %}
+    </div>
+    <!-- Grid row -->
+  </div>
+  <!-- partitioner -->
+{% comment %} 
+{% if is_paginated %}
+  <ul class="pagination">
+    {% if page_obj.has_previous %}
+      <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&laquo;</span></li>
+    {% endif %}
+    {% for i in paginator.page_range %}
+      {% if page_obj.number == i %}
+        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+      {% else %}
+        <li><a href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+    {% endfor %}
+    {% if page_obj.has_next %}
+      <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&raquo;</span></li>
+    {% endif %}
+  </ul>
+{% endif %} {% endcomment %}
+
+  {% if is_paginated %}
+  <ul class="pagination">
+
+  {% if page_obj.has_previous %}
+      <li><a href="?page={{ page_obj.previous_page_number }}"><i class="fa fa-chevron-left" aria-hidden="true"></i></a></li>
+  {% else %}
+      <li class="disabled"><span><i class="fa fa-chevron-left" aria-hidden="true"></i></span></li>
+  {% endif %}
+
+  {% if page_obj.number|add:'-4' > 1 %}
+      <li><a href="?page={{ page_obj.number|add:'-5' }}">&hellip;</a></li>
+  {% endif %}
+
+  {% for i in page_obj.paginator.page_range %}
+      {% if page_obj.number == i %}
+          <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+      {% elif i > page_obj.number|add:'-5' and i < page_obj.number|add:'5' %}
+          <li><a href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+  {% endfor %}
+
+  {% if page_obj.paginator.num_pages > page_obj.number|add:'4' %}
+      <li><a href="?page={{ page_obj.number|add:'5' }}">&hellip;</a></li>
+  {% endif %}
+
+  {% if page_obj.has_next %}
+      <li><a href="?page={{ page_obj.next_page_number }}"><i class="fa fa-chevron-right" aria-hidden="true"></i></a></li>
+  {% else %}
+      <li class="disabled"><span><i class="fa fa-chevron-right" aria-hidden="true"></i></span></li>
+  {% endif %}
+
+  </ul>
+  {% endif %}
+</div>
+<!-- container -->
+{% endblock maincontent %}

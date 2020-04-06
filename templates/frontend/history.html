@@ -1,0 +1,49 @@
+{% extends 'frontend/index.html' %}
+
+{% block maincontent %}
+<div class="" style="margin-top: 128px;">
+  <div class="container">
+    <div class="row">
+      {% for booking in object_list %}
+      <div class="col-sm-4 col-xs-2">
+        <!--Card-->
+        <div class="card">
+          <!--Card image-->
+          <img class="img-fluid" src="{{ booking.book.image.url }}" alt="Card image cap" style="height: 256px; width: auto;">
+          <!--Card content-->
+          <div class="card-body">
+            <!--Title-->
+            <h4 class="card-title">{{ booking.book.title }}</h4>
+            <!--Text-->
+            <p class="card-text">{{ booking.book.author }}({{ booking.book.published_date }})</p>
+            <a href="#" class="btn btn-primary">{{ booking.book.category }}</a>
+          </div>
+        </div>
+        <!--/.Card-->
+      </div>
+      {% endfor %}
+    </div>
+    {% if is_paginated %}
+    <ul class="pagination">
+      {% if page_obj.has_previous %}
+      <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+      {% else %}
+      <li class="disabled"><span>&laquo;</span></li>
+      {% endif %}
+      {% for i in paginator.page_range %}
+      {% if page_obj.number == i %}
+      <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+      {% else %}
+      <li><a href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+      {% endfor %}
+      {% if page_obj.has_next %}
+      <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+      {% else %}
+      <li class="disabled"><span>&raquo;</span></li>
+      {% endif %}
+    </ul>
+    {% endif %}
+  </div>
+</div>
+{% endblock maincontent %}

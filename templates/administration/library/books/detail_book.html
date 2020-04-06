@@ -1,0 +1,71 @@
+{% extends 'administration/library/home.html' %}
+{% load staticfiles %}
+
+{% block header %}
+<style media="screen">
+  .glyphicon {
+    margin-bottom: 10px;
+    margin-right: 10px;
+  }
+</style>
+{% endblock header %}
+
+{% block maincontent %}
+<h3 class="page-title"><a href="{% url 'my_app:list_book' %}">Book / Detail</a></h3>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <!-- TABLE STRIPED -->
+      <div class="panel">
+        <div class="panel-heading">
+          <h3 class="panel-title">Details</h3>
+        </div>
+        <div class="row">
+          <div class="col-md-3">
+            <div class="text-center" style="margin: 0 0 10px 10px;">
+              <img src="{{ object.image.url }}" alt="" height="300" style="max-width: 100%;" />
+            </div>
+          </div>
+          <div class="col-md-9">
+            <div class="panel-body">
+              <table class="table table-striped">
+                <tbody>
+                  <tr>
+                    <td><strong>Book Title</strong></td>
+                    <td>{{ object.title }}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Book Author</strong></td>
+                    <td>{{ object.author }}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>ISBN</strong></td>
+                    <td>{{ object.isbn }}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Availability</strong></td>
+                    <td>
+  										<button type="button" class="btn btn-{% if object.available %}success{% else %}danger{% endif %}">
+                        {% if object.available %}
+                          Available
+                        {% else %}
+                          Not Available
+                        {% endif %}
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Number in stock</strong></td>
+                    <td>{{ object.number_in_stock }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- END TABLE STRIPED -->
+    </div>
+  </div>
+</div>
+{% endblock maincontent %}
