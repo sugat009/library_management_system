@@ -19,7 +19,7 @@ jsonfield==2.0.2
 kiwisolver==1.0.1
 kombu==4.5.0
 matplotlib==3.0.3
-numpy==1.21.0
+numpy==1.22.0
 oauthlib==3.0.1
 pandas==0.24.2
 pilkit==2.0
