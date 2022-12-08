@@ -1,7 +1,7 @@
 amqp==2.4.2
 billiard==3.6.0.0
 celery==5.2.2
-certifi==2019.3.9
+certifi==2022.12.7
 chardet==3.0.4
 cycler==0.10.0
 defusedxml==0.6.0
